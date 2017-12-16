@@ -128,7 +128,7 @@ Here's a [link to my video result](./project_video_out.mp4)
 
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
-Derived from the heat map method I mentioned above, in code cell named: "Define a Class to Store Data from Vehicle Detections", I created a Vehicle_Detect class for storing the detection rectangles of previous n frames. This allows me to create the heat map not from single frame but from the past n frames. And the threshold I defined it as at least half of past n frames have to return positive detection. 
+Derived from the heat map method I mentioned above, in code cell named: "Define a Class to Store Data from Vehicle Detections", I created a Vehicle_Detect class for storing the detection rectangles of previous n frames. This allows me to create the heat map not from single frame but from the past n frames. And the threshold I defined it as at least half of past n frames have to return positive detection. This definetely enhance the robustness of the pipeline when processing continuous frames from the video.
 
 ---
 
