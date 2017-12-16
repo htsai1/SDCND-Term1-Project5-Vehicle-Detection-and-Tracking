@@ -22,7 +22,13 @@ The goals / steps of this project are the following:
 [image6]: ./ExampleOutputImages/Scale20.JPG
 [image7]: ./ExampleOutputImages/Scale30.JPG
 [image8]: ./ExampleOutputImages/FinalSildingWindowSearch.JPG
-[video1]: ./project_video.mp4
+[image9]: ./ExampleOutputImages/HeatMap.JPG
+[image10]: ./ExampleOutputImages/TresholdHeatMap.JPG
+[image11]: ./ExampleOutputImages/SciPy.JPG
+[image12]: ./ExampleOutputImages/FinalBounding.JPG
+[image13]: ./ExampleOutputImages/FinalTestImages.JPG
+[video1]: ./project_video_out.mp4
+
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
@@ -65,50 +71,60 @@ As suggested in the lesson, it is beneficial to create a multi-scale sliding win
 
 ![alt text][image3]
 
-Multi-scale sliding winodw approach mean the scale of the searching window would vary based on the distance of the other object relative to the us (i.e. vehicle), the closer the bigger searching window size should be. Starting in code cell named: Set Scale to 1.0, I started exploring different scales of searching window size and defining their search area in an image. Below are visualization of multi-scale sliding window search: 
+Multi-scale sliding winodw approach mean the scale of the searching window would vary based on the distance of the other object relative to the us (i.e. vehicle), the closer the bigger searching window size should be. Starting in code cell named: Set Scale to 1.0, I started exploring different scales of searching window size and defining their search area in an image. Below is visualization of final multi-scale sliding window search with different scales: 
 
+Scale 1.0:
 ![alt text][image4]
 
+Scale 1.5:
 ![alt text][image5]
 
+Scale 2.0:
 ![alt text][image6]
 
+Scale 3.0:
 ![alt text][image7]
+
+To speed things up, I only extract HOG features just once for the entire region of interest (i.e. lower half of the image) and subsample that array for each sliding window. Overlap is decided by how many cell distance I move from step to step. Each searching window has 8 x 8 cells and I have cells_per_step = 2, so it result in a search window overlap of 75%. 
 
 Finally I combined all the sliding window scales into one pipeline, here is an example:
 
 ![alt text][image8]
 
+The images now are showing all the bounding boxes for where my classifier reported positive detections, then I build a heat-map from these detections in order to combine overlapping detections and later use threshold to remove false positives.
+
+To create a heat map, I added "heat" (+=1) for all pixels within windows where a positive detection that reported by my classifier. Here is an example of heat map from the final sliding window example I showed above: 
+
+![alt text][image9]
+
+In order to reject areas affected by false positives, a threshold =2 is created, it would result the thresholded heat map as below. As you can see the false poitive on the left has been rejected.
+
+![alt text][image10]
+
+Once obtaining the thresholded heat-map from a list of bounding boxes, use the label() function from scipy.ndimage.measurements. to figure out how many cars in each frame and which pixels belong to which car. Here is an example of result: 
+
+![alt text][image11]
+
+Then I took the labeled image and put bounding boxes around the labeled regions. 
+
+![alt text][image12]
+
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
+Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  I ran the pipeline on all the test images, here are some example images:
 
-![alt text][image4]
+![alt text][image13]
 ---
 
 ### Video Implementation
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
-Here's a [link to my video result](./project_video.mp4)
+Here's a [link to my video result](./project_video_out.mp4)
 
 
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
-I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
-
-Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
-
-### Here are six frames and their corresponding heatmaps:
-
-![alt text][image5]
-
-### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
-![alt text][image6]
-
-### Here the resulting bounding boxes are drawn onto the last frame in the series:
-![alt text][image7]
-
-
+Derived from the heat map method I mentioned above, in code cell named: "Define a Class to Store Data from Vehicle Detections", I created a Vehicle_Detect class for storing the detection rectangles of previous n frames. This allows me to create the heat map not from single frame but from the past n frames. And the threshold I defined it as at least half of past n frames have to return positive detection. 
 
 ---
 
@@ -116,5 +132,10 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+I found the the experimentation of finding what features works the best took me quite long hours of time. I ended up using YCrCb 3-channel HOG plus spatially binned color and histograms of color but thinking there is still more room I could improve.
 
+I also found the pipeline with the thresholded heat map is generated based on signle frame does not work well, as I tried that pipeline on the test short video, I found the bounding boxes are quite wobboling. As hinted in the lesson, turns out I need to consider "previous frame", it is kind of the concept of tracking, in order to increase the robustness of the detection.  
+
+As other computer vision based technique, enviromental concerns, like lighting condition, weather, are always the biggest obstacle to the technique that heavily rely on images. Also the classifier may also fail detecting vehicle if the specific vehicle is not like/represented in the training set we fed it. 
+
+To make the vehicle detectiong and tracking pipeline more robust, we may want to consider the detected vehicle's speed, it will enhance the prediction of its next location on the image. I personally consider that , rather than only rely on images processed technique, the vehicle detection and tracking definetely need sensor fusion, i.e. combine the inputs from other sensors like radar and lidar, in order to elimate more false poitives or even worse false negatives. I think this definetely explain why long range/short range radars are still being considered as major inputs of object detection. I consider camera images more suitable for traffic sign/light classifier, or even to identify pedestrian (along with lidar data or ultrasonic sensor data). 
