@@ -16,11 +16,12 @@ The goals / steps of this project are the following:
 [//]: # (Image References)
 [image1]: ./ExampleOutputImages/TrainingDataVisualization.JPG
 [image2]: ./ExampleOutputImages/VisualizeHOG.JPG
-[image3]: ./examples/sliding_windows.jpg
-[image4]: ./examples/sliding_window.jpg
-[image5]: ./examples/bboxes_and_heat.png
-[image6]: ./examples/labels_map.png
-[image7]: ./examples/output_bboxes.png
+[image3]: ./ExampleOutputImages/OneWindowSearch.JPG
+[image4]: ./ExampleOutputImages/Scale10.JPG
+[image5]: ./ExampleOutputImages/Scale15.JPG
+[image6]: ./ExampleOutputImages/Scale20.JPG
+[image7]: ./ExampleOutputImages/Scale30.JPG
+[image8]: ./ExampleOutputImages/FinalSildingWindowSearch.JPG
 [video1]: ./project_video.mp4
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
@@ -60,11 +61,20 @@ The code of training the classifier is contained in the code cell named: Train T
 
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-As suggested in the lesson, it is beneficial to create a multi-scale sliding window approach. Meaning the scale of the searching window will vary based on the distance of the other object relative to the us (i.e. vehicle), the closer the bigger searching window size should be. 
-
-
+As suggested in the lesson, it is beneficial to create a multi-scale sliding window approach. But before that, I have the function finds_car which is the function to search the vehicle using only one scale, a full window size. Here is an example of the result: 
 
 ![alt text][image3]
+
+Multi-scale sliding winodw approach mean the scale of the searching window would vary based on the distance of the other object relative to the us (i.e. vehicle), the closer the bigger searching window size should be. Starting in code cell named: Set Scale to 1.0, I started exploring different scales of searching window size and defining their search area in an image. Below are visualization of multi-scale sliding window search: 
+
+![alt text][image4]
+![alt text][image5]
+![alt text][image6]
+![alt text][image7]
+
+Finally I combined all the sliding window scales into one pipeline, here is an example:
+
+![alt text][image8]
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
