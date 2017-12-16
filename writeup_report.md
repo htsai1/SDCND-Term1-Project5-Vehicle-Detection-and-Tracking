@@ -74,15 +74,19 @@ As suggested in the lesson, it is beneficial to create a multi-scale sliding win
 Multi-scale sliding winodw approach mean the scale of the searching window would vary based on the distance of the other object relative to the us (i.e. vehicle), the closer the bigger searching window size should be. Starting in code cell named: Set Scale to 1.0, I started exploring different scales of searching window size and defining their search area in an image. Below is visualization of final multi-scale sliding window search with different scales: 
 
 Scale 1.0:
+
 ![alt text][image4]
 
 Scale 1.5:
+
 ![alt text][image5]
 
 Scale 2.0:
+
 ![alt text][image6]
 
 Scale 3.0:
+
 ![alt text][image7]
 
 To speed things up, I only extract HOG features just once for the entire region of interest (i.e. lower half of the image) and subsample that array for each sliding window. Overlap is decided by how many cell distance I move from step to step. Each searching window has 8 x 8 cells and I have cells_per_step = 2, so it result in a search window overlap of 75%. 
