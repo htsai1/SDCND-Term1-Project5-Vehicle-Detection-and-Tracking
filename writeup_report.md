@@ -14,8 +14,8 @@ The goals / steps of this project are the following:
 * Estimate a bounding box for vehicles detected.
 
 [//]: # (Image References)
-[image1]: ./examples/car_not_car.png
-[image2]: ./examples/HOG_example.jpg
+[image1]: ./ExampleOutputImages/TrainingDataVisualization.JPG
+[image2]: ./ExampleOutputImages/VisualizeHOG.JPG
 [image3]: ./examples/sliding_windows.jpg
 [image4]: ./examples/sliding_window.jpg
 [image5]: ./examples/bboxes_and_heat.png
@@ -37,32 +37,32 @@ You're reading the writeup. Please also see the IPython notebook - "Vehicle-Dete
 
 #### 1. Explain how (and identify where in your code) you extracted HOG features from the training images.
 
-The code for this step is contained in the first code cell of the IPython notebook (or in lines # through # of the file called `some_file.py`).  
-
-I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
+Before extracing HOG features, I started by reading in all the training images- `vehicle` and `non-vehicle` images.  Here are some examples of the `vehicle` and `non-vehicle` classes:
 
 ![alt text][image1]
 
-I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
-
-Here is an example using the `YCrCb` color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
-
+The code of extracting HOG features from image is contained in the code cell named: Convert Image to Histogram of Oriented Gradients (HOG) in the ipython notebook. I defined a method named get_hog_features to do this job. Here are some examples of visualizing the comparison between original images and their HOG features shown images. 
 
 ![alt text][image2]
 
+I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
+
+
 #### 2. Explain how you settled on your final choice of HOG parameters.
 
-I tried various combinations of parameters and...
+I tried various combinations of parameters and finally found that, with colorspace = YCrCb, orientation=9, pixels per cell = 8, cells per block = 2, HOG = ALL, Feature extracion time < 80 secs,  I could have the classifier that will be trained later to reach 98.76% test accuracy.  
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
-I trained a linear SVM using...
+The code of training the classifier is contained in the code cell named: Train The Classifier. I trained a linear Support Vector Machine (SVM) using default classifier parameters and the training data I had processed with the features that combined HOG, bin spatial and color hist. The trained was able to achieve a test accuracy of 98.76%.
 
 ### Sliding Window Search
 
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-I decided to search random window positions at random scales all over the image and came up with this (ok just kidding I didn't actually ;):
+As suggested in the lesson, it is beneficial to create a multi-scale sliding window approach. Meaning the scale of the searching window will vary based on the distance of the other object relative to the us (i.e. vehicle), the closer the bigger searching window size should be. 
+
+
 
 ![alt text][image3]
 
