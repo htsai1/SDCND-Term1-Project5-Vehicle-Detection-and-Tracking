@@ -68,8 +68,11 @@ As suggested in the lesson, it is beneficial to create a multi-scale sliding win
 Multi-scale sliding winodw approach mean the scale of the searching window would vary based on the distance of the other object relative to the us (i.e. vehicle), the closer the bigger searching window size should be. Starting in code cell named: Set Scale to 1.0, I started exploring different scales of searching window size and defining their search area in an image. Below are visualization of multi-scale sliding window search: 
 
 ![alt text][image4]
+
 ![alt text][image5]
+
 ![alt text][image6]
+
 ![alt text][image7]
 
 Finally I combined all the sliding window scales into one pipeline, here is an example:
