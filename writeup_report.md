@@ -138,7 +138,7 @@ Derived from the heat map method I mentioned above, in code cell named: "Define 
 
 I found the the experimentation of finding what features works the best took me quite long hours of time. I ended up using YCrCb 3-channel HOG plus spatially binned color and histograms of color but thinking there is still more room I could improve.
 
-I also found the pipeline with the thresholded heat map is generated based on signle frame does not work well, as I tried that pipeline on the test short video, I found the bounding boxes are quite wobboling. As hinted in the lesson, turns out I need to consider "previous frame", it is kind of the concept of tracking, in order to increase the robustness of the detection.  
+I also found the pipeline with the thresholded heat map is generated based on signle frame does not work well, as I tried that pipeline on the test short video, I found the bounding boxes are quite wobboling. As hinted in the lesson, turns out I need to consider previous frames, which is kind of the concept of tracking, in order to increase the robustness of the detection.  
 
 As other computer vision based technique, enviromental concerns, like lighting condition, weather, are always the biggest obstacle to the technique that heavily rely on images. Also the classifier may also fail detecting vehicle if the specific vehicle is not like/represented in the training set we fed it. 
 
